@@ -1,0 +1,13 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "contact": "Contact"
+  },
+  "button": {
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Hi! I'm interested in KP Natural Hairoils. Can you tell me more about your sulfur-free hair oil?"
+  }
+}
