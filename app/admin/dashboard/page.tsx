@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,12 +31,21 @@ import {
   Zap,
 } from "lucide-react";
 import { getAdminSession, clearAdminSession } from "@/lib/admin-auth";
-import { Mail, Plus, UserPlus } from "lucide-react";
+import { Mail, Plus, UserPlus, Trash2, Edit } from "lucide-react";
 
 interface PricingData {
   currentPrice: string;
   currentOffer: string;
   isOfferActive: boolean;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string | null;
+  created_at: string;
 }
 
 export default function AdminDashboard() {
@@ -57,6 +67,14 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<any[]>([]);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [productForm, setProductForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    image_url: "",
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -69,6 +87,7 @@ export default function AdminDashboard() {
       setAdminUser(session);
       fetchPricingData();
       fetchUsers();
+      fetchProducts();
     })();
   }, [router]);
 
@@ -97,6 +116,18 @@ export default function AdminDashboard() {
       }
     } catch (e) {
       console.error("Failed to fetch users", e);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data.products || []);
+      }
+    } catch (e) {
+      console.error("Failed to fetch products", e);
     }
   };
 
@@ -142,6 +173,105 @@ export default function AdminDashboard() {
       setMessage({ type: "error", text: e.message || "Failed to create user" });
     }
     setIsLoading(false);
+  };
+
+  const handleCreateProduct = async () => {
+    setIsLoading(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productForm),
+      });
+      if (res.ok) {
+        setProductForm({ name: "", description: "", price: "", image_url: "" });
+        await fetchProducts();
+        setMessage({ type: "success", text: "Product created successfully" });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        throw new Error("Failed to create product");
+      }
+    } catch (e: any) {
+      setMessage({
+        type: "error",
+        text: e.message || "Failed to create product",
+      });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setIsLoading(false);
+  };
+
+  const handleUpdateProduct = async () => {
+    if (!editingProduct) return;
+    setIsLoading(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/products", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingProduct.id,
+          ...productForm,
+        }),
+      });
+      if (res.ok) {
+        setEditingProduct(null);
+        setProductForm({ name: "", description: "", price: "", image_url: "" });
+        await fetchProducts();
+        setMessage({ type: "success", text: "Product updated successfully" });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        throw new Error("Failed to update product");
+      }
+    } catch (e: any) {
+      setMessage({
+        type: "error",
+        text: e.message || "Failed to update product",
+      });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setIsLoading(false);
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    setIsLoading(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/products?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchProducts();
+        setMessage({ type: "success", text: "Product deleted successfully" });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        throw new Error("Failed to delete product");
+      }
+    } catch (e: any) {
+      setMessage({
+        type: "error",
+        text: e.message || "Failed to delete product",
+      });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setIsLoading(false);
+  };
+
+  const startEditingProduct = (product: Product) => {
+    setEditingProduct(product);
+    setProductForm({
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      image_url: product.image_url || "",
+    });
+  };
+
+  const cancelEditingProduct = () => {
+    setEditingProduct(null);
+    setProductForm({ name: "", description: "", price: "", image_url: "" });
   };
 
   const handleLogout = async () => {
@@ -431,6 +561,12 @@ export default function AdminDashboard() {
               Price Management
             </TabsTrigger>
             <TabsTrigger
+              value="products"
+              className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700 dark:data-[state=active]:bg-emerald-900/50 dark:data-[state=active]:text-emerald-100"
+            >
+              Products
+            </TabsTrigger>
+            <TabsTrigger
               value="analytics"
               className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700 dark:data-[state=active]:bg-emerald-900/50 dark:data-[state=active]:text-emerald-100"
             >
@@ -633,7 +769,198 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="users" className="space-y-6">
+          <TabsContent value="products" className="space-y-6">
+            <Card className="glass border-emerald-200/50 dark:border-emerald-800/40 shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-xl font-serif font-black text-emerald-800 dark:text-emerald-100">
+                  Product Management
+                </CardTitle>
+                <CardDescription className="text-emerald-600/70 dark:text-emerald-300/80">
+                  Add, edit, and manage your product catalog.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Product Form */}
+                <div className="p-4 rounded-lg border border-emerald-200/50 dark:border-emerald-800/40 bg-emerald-50/50 dark:bg-emerald-900/30">
+                  <h4 className="font-medium text-emerald-800 dark:text-emerald-100 mb-4">
+                    {editingProduct ? "Edit Product" : "Add New Product"}
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-emerald-700 dark:text-emerald-100">
+                        Name
+                      </Label>
+                      <Input
+                        value={productForm.name}
+                        onChange={(e) =>
+                          setProductForm({
+                            ...productForm,
+                            name: e.target.value,
+                          })
+                        }
+                        placeholder="Product name"
+                        className="border-emerald-200 focus:border-emerald-400 dark:border-emerald-800 dark:focus:border-emerald-600"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-emerald-700 dark:text-emerald-100">
+                        Description
+                      </Label>
+                      <Textarea
+                        value={productForm.description}
+                        onChange={(e) =>
+                          setProductForm({
+                            ...productForm,
+                            description: e.target.value,
+                          })
+                        }
+                        placeholder="Product description"
+                        className="border-emerald-200 focus:border-emerald-400 dark:border-emerald-800 dark:focus:border-emerald-600"
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-emerald-700 dark:text-emerald-100">
+                        Price (₹)
+                      </Label>
+                      <Input
+                        type="number"
+                        value={productForm.price}
+                        onChange={(e) =>
+                          setProductForm({
+                            ...productForm,
+                            price: e.target.value,
+                          })
+                        }
+                        placeholder="145"
+                        className="border-emerald-200 focus:border-emerald-400 dark:border-emerald-800 dark:focus:border-emerald-600"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-emerald-700 dark:text-emerald-100">
+                        Image URL
+                      </Label>
+                      <Input
+                        value={productForm.image_url}
+                        onChange={(e) =>
+                          setProductForm({
+                            ...productForm,
+                            image_url: e.target.value,
+                          })
+                        }
+                        placeholder="/product1.png"
+                        className="border-emerald-200 focus:border-emerald-400 dark:border-emerald-800 dark:focus:border-emerald-600"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      {editingProduct ? (
+                        <>
+                          <Button
+                            onClick={handleUpdateProduct}
+                            disabled={
+                              isLoading ||
+                              !productForm.name ||
+                              !productForm.description ||
+                              !productForm.price
+                            }
+                            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                          >
+                            <Save className="w-4 h-4 mr-1" /> Update Product
+                          </Button>
+                          <Button
+                            onClick={cancelEditingProduct}
+                            variant="outline"
+                            className="border-emerald-200 dark:border-emerald-800"
+                          >
+                            <X className="w-4 h-4 mr-1" /> Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          onClick={handleCreateProduct}
+                          disabled={
+                            isLoading ||
+                            !productForm.name ||
+                            !productForm.description ||
+                            !productForm.price
+                          }
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                        >
+                          <Plus className="w-4 h-4 mr-1" /> Add Product
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Products List */}
+                <div>
+                  <h4 className="font-medium text-emerald-800 dark:text-emerald-100 mb-4">
+                    Products ({products.length})
+                  </h4>
+                  {products.length === 0 ? (
+                    <p className="text-emerald-700/70 dark:text-emerald-300/80 text-center py-8">
+                      No products found. Add your first product above.
+                    </p>
+                  ) : (
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {products.map((product) => (
+                        <Card
+                          key={product.id}
+                          className="border-emerald-200/50 dark:border-emerald-800/40"
+                        >
+                          <CardHeader className="p-0">
+                            <div className="relative h-48 overflow-hidden rounded-t-lg">
+                              <img
+                                src={product.image_url || "/placeholder.svg"}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-4">
+                            <CardTitle className="text-lg mb-2 text-emerald-800 dark:text-emerald-100">
+                              {product.name}
+                            </CardTitle>
+                            <CardDescription className="text-sm mb-3 line-clamp-2">
+                              {product.description}
+                            </CardDescription>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                                ₹{product.price}
+                              </span>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => startEditingProduct(product)}
+                                  className="border-emerald-200 dark:border-emerald-800"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    handleDeleteProduct(product.id)
+                                  }
+                                  className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
             <Card className="glass border-emerald-200/50 dark:border-emerald-800/40 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-xl font-serif font-black text-emerald-800 dark:text-emerald-100">

@@ -19,6 +19,9 @@ import {
   Award,
   ArrowLeft,
   Zap,
+  Loader2,
+  ShoppingCart,
+  Eye,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -32,6 +35,15 @@ interface PricingData {
   isOfferActive: boolean;
 }
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string | null;
+  created_at: string;
+}
+
 export default function ProductsPage() {
   const { t } = useLanguage();
   const [pricingData, setPricingData] = useState<PricingData>({
@@ -39,6 +51,8 @@ export default function ProductsPage() {
     currentOffer: "20% OFF",
     isOfferActive: true,
   });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPricingData = async () => {
@@ -59,14 +73,33 @@ export default function ProductsPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleWhatsAppClick = () => {
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/products");
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWhatsAppClick = (productName?: string, productPrice?: number) => {
+    const name = productName || "KP Natural Hairoils";
+    const price = productPrice ? `₹${productPrice}` : pricingData.currentPrice;
     const message = encodeURIComponent(
-      `Hi! I'm interested in KP Natural Hairoils at ${pricingData.currentPrice}. Can you tell me more about your sulfur-free hair oil?`
+      `Hi! I'm interested in ${name} at ${price}. Can you tell me more about your sulfur-free hair oil?`
     );
     window.open(`https://wa.me/916381248615?text=${message}`, "_blank");
   };
-
-  const productImages = ["/product1.png"];
 
   const benefits = [
     {
@@ -117,71 +150,98 @@ export default function ProductsPage() {
 
       <section className="py-6 sm:py-12 md:py-20 bg-gradient-to-br from-card to-background">
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
-            <div className="space-y-4 sm:space-y-6 md:space-y-8 text-center lg:text-left">
-              <Badge className="bg-accent text-accent-foreground w-fit mx-auto lg:mx-0 text-xs sm:text-sm px-2 sm:px-3 py-1">
-                {t("product.badge")}
-              </Badge>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-serif font-black text-foreground leading-tight">
-                {t("product.title")}
-                <span className="text-primary block sm:inline">
-                  {" "}
-                  {t("product.subtitle")}
-                </span>
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
-                {t("product.description")}
-              </p>
-
-              <div className="bg-primary/10 p-3 sm:p-4 md:p-6 rounded-lg border border-primary/20">
-                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 md:gap-4 mb-2 justify-center lg:justify-start">
-                  <span className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
-                    {pricingData.currentPrice}
-                  </span>
-                  {pricingData.isOfferActive && (
-                    <Badge className="bg-red-600 text-white border-0 text-xs sm:text-sm shadow-sm">
-                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      {pricingData.currentOffer}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground text-center lg:text-left">
-                  {t("product.usage")}
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center lg:justify-start">
-                <Button
-                  size="lg"
-                  onClick={handleWhatsAppClick}
-                  className="bg-green-600 hover:bg-green-700 text-white shadow-lg border-0 w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
-                >
-                  {t("product.whatsapp")}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary hover:text-white bg-transparent w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
-                >
-                  {t("product.learn")}
-                </Button>
-              </div>
-            </div>
-
-            <div className="relative mt-6 sm:mt-8 lg:mt-0">
-              <div className="flex justify-center">
-                {productImages.map((image, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`KP Natural Hair Oil Product ${index + 1}`}
-                      className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl h-auto max-h-[40vh] sm:max-h-[50vh] md:max-h-[60vh] object-contain rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="text-center mb-6 sm:mb-12 md:mb-16">
+            <Badge className="bg-accent text-accent-foreground w-fit mx-auto text-xs sm:text-sm px-2 sm:px-3 py-1 mb-4">
+              {t("product.badge")}
+            </Badge>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-serif font-black text-foreground leading-tight mb-4">
+              {t("product.title")}
+              <span className="text-primary block sm:inline">
+                {" "}
+                {t("product.subtitle")}
+              </span>
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
+              {t("product.description")}
+            </p>
           </div>
+
+          {/* Products Grid from Supabase */}
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {products.map((product) => (
+                <Card
+                  key={product.id}
+                  className="border-border bg-card hover:shadow-xl transition-all duration-300 group"
+                >
+                  <CardHeader className="p-0">
+                    <div className="relative overflow-hidden rounded-t-lg h-64">
+                      <img
+                        src={product.image_url || "/placeholder.svg"}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6 space-y-4">
+                    <div>
+                      <CardTitle className="font-serif font-bold text-card-foreground text-xl mb-2">
+                        {product.name}
+                      </CardTitle>
+                      <CardDescription className="text-muted-foreground leading-relaxed text-sm line-clamp-3">
+                        {product.description}
+                      </CardDescription>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-primary">
+                        ₹{product.price}
+                      </span>
+                      {pricingData.isOfferActive && (
+                        <Badge className="bg-red-600 text-white border-0 text-xs shadow-sm">
+                          <Zap className="w-3 h-3 mr-1" />
+                          {pricingData.currentOffer}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Link href={`/product/${product.id}`} className="flex-1">
+                        <Button
+                          variant="outline"
+                          className="w-full border-primary text-primary hover:bg-primary hover:text-white"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Details
+                        </Button>
+                      </Link>
+                      <Button
+                        onClick={() =>
+                          handleWhatsAppClick(product.name, product.price)
+                        }
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Order
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="max-w-md mx-auto">
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">
+                  No products available at the moment. Check back soon!
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
 
