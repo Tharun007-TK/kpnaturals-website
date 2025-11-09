@@ -11,19 +11,32 @@ interface PricingData {
 }
 
 export function DynamicPricing() {
-  const [pricingData, setPricingData] = useState<PricingData>({
-    currentPrice: "₹145",
-    currentOffer: "20% OFF",
-    isOfferActive: true,
-  });
+  // Start with null so we don't show a stale hard-coded price that later "flickers" to the real value.
+  const [pricingData, setPricingData] = useState<PricingData | null>(null);
 
   useEffect(() => {
+    // 1) Try to hydrate immediately from last-known value (client-side cache)
+    try {
+      const cached = localStorage.getItem("pricingData");
+      if (cached) {
+        const parsed = JSON.parse(cached) as PricingData;
+        if (parsed?.currentPrice) setPricingData(parsed);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+
     const fetchPricingData = async () => {
       try {
         const response = await fetch("/api/public/pricing");
         if (response.ok) {
           const data = await response.json();
           setPricingData(data);
+          try {
+            localStorage.setItem("pricingData", JSON.stringify(data));
+          } catch (e) {
+            // ignore storage errors
+          }
         }
       } catch (error) {
         console.error("Failed to fetch pricing data:", error);
@@ -37,8 +50,21 @@ export function DynamicPricing() {
     return () => clearInterval(interval);
   }, []);
 
+  // Loading placeholder (simple skeleton). Avoid showing old static price.
+  if (!pricingData) {
+    return (
+      <div className="flex items-center gap-3 mb-4" aria-busy="true">
+        <div className="h-8 w-20 rounded bg-muted animate-pulse" />
+        <div className="h-6 w-24 rounded bg-muted animate-pulse" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 mb-4">
+    <div
+      className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 mb-4"
+      aria-live="polite"
+    >
       <span className="text-3xl sm:text-4xl font-black text-primary">
         {pricingData.currentPrice}
       </span>

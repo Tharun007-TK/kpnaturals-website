@@ -38,7 +38,7 @@ const translations = {
     "hero.offer": "Sunday Special: 20% OFF",
     "hero.usage": "Use for 3 months for best results",
     "button.order": "Order Now",
-    "button.learn": "Learn More",
+    "button.learn": "Visit",
 
     // Farm Story
     "farm.title": "From Our Farm to Your Hair",
@@ -186,7 +186,7 @@ const translations = {
     "hero.offer": "ஞாயிறு சிறப்பு: 20% தள்ளுபடி",
     "hero.usage": "சிறந்த முடிவுகளுக்கு 3 மாதங்கள் பயன்படுத்தவும்",
     "button.order": "இப்போது ஆர்டர் செய்யுங்கள்",
-    "button.learn": "மேலும் அறிக",
+    "button.learn": "பார்வையிட",
 
     // Farm Story
     "farm.title": "எங்கள் பண்ணையிலிருந்து உங்கள் முடிக்கு",
