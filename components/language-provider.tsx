@@ -26,12 +26,12 @@ const translations = {
     "nav.contact": "Contact",
     "button.whatsapp": "WhatsApp",
     "button.whatsappMessage":
-      "Hi! I'm interested in KP Natural Hairoils. Can you tell me more about your sulfur-free hair oil?",
+      "Hi! I'm interested in KP Naturals. Can you tell me more about your sulfur-free hair oil?",
 
     // Hero Section
     "hero.badge": "100% Natural & Sulfur-Free",
     "hero.title": "Transform Your Hair with",
-    "hero.brand": "KP Natural Hairoils",
+    "hero.brand": "KP Naturals",
     "hero.description":
       "Experience the power of natural sulfur-free hair oil crafted with hibiscus, coconut oil, and rosemary. Nourish and strengthen your hair naturally without harsh chemicals.",
     "hero.price": "₹145",
@@ -94,7 +94,7 @@ const translations = {
     "reviews.subtitle":
       "Join thousands of satisfied customers who have transformed their hair naturally.",
     "reviews.leave": "Leave a Review",
-    "reviews.placeholder": "Share your experience with KP Natural Hairoils...",
+    "reviews.placeholder": "Share your experience with KP Naturals...",
     "reviews.submit": "Submit Review",
 
     // Contact
@@ -172,12 +172,14 @@ const translations = {
     "nav.contact": "தொடர்பு",
     "button.whatsapp": "வாட்ஸ்அப்",
     "button.whatsappMessage":
-      "வணக்கம்! கேபி இயற்கை முடி எண்ணெயில் எனக்கு ஆர்வம் உள்ளது. உங்கள் சல்பர் இல்லாத முடி எண்ணெயைப் பற்றி மேலும் கூற முடியுமா?",
+      "வணக்கம்! KP Naturals பற்றி எனக்கு ஆர்வம் உள்ளது. உங்கள் சல்பர் இல்லாத முடி எண்ணெயைப் பற்றி மேலும் கூற முடியுமா?",
 
     // Hero Section
     "hero.badge": "100% இயற்கை & சல்பர் இல்லாத",
     "hero.title": "உங்கள் முடியை மாற்றுங்கள்",
-    "hero.brand": "கேபி இயற்கை முடி எண்ணெய்",
+    // Updated brand name to KP Naturals (transliteration kept in English for branding consistency)
+    // If a fully localized Tamil brand rendering is desired, replace with: "KP நேச்சுரல்ஸ் முடி எண்ணெய்"
+    "hero.brand": "KP Naturals",
     "hero.description":
       "செம்பருத்தி, தேங்காய் எண்ணெய் மற்றும் ரோஸ்மேரியுடன் தயாரிக்கப்பட்ட இயற்கை சல்பர் இல்லாத முடி எண்ணெயின் சக்தியை அனுபவிக்கவும். கடுமையான இரசாயனங்கள் இல்லாமல் உங்கள் முடியை இயற்கையாக வளர்க்கவும் வலுப்படுத்தவும்.",
     "hero.price": "₹145",
@@ -190,7 +192,7 @@ const translations = {
     "farm.title": "எங்கள் பண்ணையிலிருந்து உங்கள் முடிக்கு",
     "farm.subtitle": "பண்ணை புதிய தரம்",
     "farm.description":
-      "கேபி தூய தேங்காய் ரோஸ்மேரி முடி எண்ணெயில், எங்கள் சொந்த தேங்காய் பண்ணையிலிருந்து நேரடியாக இயற்கையின் சிறந்ததை உங்களுக்கு கொண்டு வருவதில் நாங்கள் பெருமை கொள்கிறோம். எங்கள் மரங்களிலிருந்து நேரடியாக அறுவடை செய்யப்பட்ட புதிய தேங்காய்களிலிருந்து ஒவ்வொரு துளி எண்ணெயும் கவனமாக பிரித்தெடுக்கப்படுகிறது, இது தூய்மை, புத்துணர்ச்சி மற்றும் நம்பகத்தன்மையை உறுதி செய்கிறது. நாங்களே தேங்காய்களை வளர்த்து பதப்படுத்துவதால், எங்கள் எண்ணெய் 100% இயற்கை, இரசாயன இல்லாதது மற்றும் உங்கள் முடிக்கு தேவையான அனைத்து அத்தியாவசிய ஊட்டச்சத்துக்களால் நிறைந்தது என்று நாங்கள் உத்தரவாதம் அளிக்கிறோம். பண்ணையிலிருந்து பாட்டில் வரை, சமரசமற்ற தரம் மற்றும் கவனிப்பை வழங்குவதே எங்கள் வாக்குறுதி.",
+      "KP Naturals இல், எங்கள் சொந்த தேங்காய் பண்ணையிலிருந்து நேரடியாக இயற்கையின் சிறந்ததை உங்களுக்கு கொண்டு வருவதில் நாங்கள் பெருமை கொள்கிறோம். மரங்களில் இருந்து புதியதே அறுவடை செய்யப்பட்ட தேங்காய்களில் இருந்து ஒவ்வொரு துளியும் கவனமாகப் பிரித்தெடுக்கப்படுகிறது – தூய்மை, تازா தன்மை மற்றும் நம்பகத்தன்மையை உறுதி செய்ய. நாங்கள் நேரடியாக வளர்த்து பதப்படுத்துவதால் எங்கள் எண்ணெய் 100% இயற்கை, இரசாயனமற்றது மற்றும் உங்கள் முடிக்கு தேவையான அத்தியாவசிய ஊட்டச்சத்துக்களால் நிரம்பியதென நாங்கள் உறுதி செய்கிறோம். பண்ணையிலிருந்து பாட்டில் வரை – மாற்றமற்ற தரமும் அக்கறையும் எங்கள் வாக்குறுதி.",
     "farm.badge": "பண்ணை புதிய",
 
     // Benefits
@@ -242,8 +244,7 @@ const translations = {
     "reviews.subtitle":
       "தங்கள் முடியை இயற்கையாக மாற்றிய ஆயிரக்கணக்கான திருப்தியான வாடிக்கையாளர்களுடன் சேருங்கள்.",
     "reviews.leave": "விமர்சனம் எழுதுங்கள்",
-    "reviews.placeholder":
-      "கேபி இயற்கை முடி எண்ணெயுடனான உங்கள் அனுபவத்தை பகிருங்கள்...",
+    "reviews.placeholder": "KP Naturals உடனான உங்கள் அனுபவத்தை பகிருங்கள்...",
     "reviews.submit": "விமர்சனம் சமர்பிக்கவும்",
 
     // Contact

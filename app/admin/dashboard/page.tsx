@@ -415,7 +415,7 @@ export default function AdminDashboard() {
                 Admin Dashboard
               </h1>
               <p className="text-emerald-600/70 dark:text-emerald-300/80 text-sm font-medium">
-                KP Natural Hairoils Management
+                KP Naturals Management
               </p>
             </div>
           </div>

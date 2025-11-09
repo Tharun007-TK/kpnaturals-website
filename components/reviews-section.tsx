@@ -32,7 +32,7 @@ export function ReviewsSection() {
       name: "Priya Sharma",
       rating: 5,
       comment:
-        "Amazing results! My hair feels so much healthier after using KP Natural Hairoils for 2 months.",
+        "Amazing results! My hair feels so much healthier after using KP Naturals for 2 months.",
       date: "2024-01-15",
     },
     {

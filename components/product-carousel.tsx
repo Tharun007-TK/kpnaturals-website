@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const images = [
   {
     src: "/product-carousel-1.png",
-    alt: "KP Natural Hair Oil with Hibiscus and Coconuts",
+    alt: "KP Naturals Hair Oil with Hibiscus and Coconuts",
   },
   {
     src: "/product-carousel-2.png",
@@ -26,7 +26,7 @@ const images = [
   },
   {
     src: "/product-carousel-3.png",
-    alt: "KP Natural Hair Oil with Natural Ingredients",
+    alt: "KP Naturals Hair Oil with Natural Ingredients",
   },
 ];
 

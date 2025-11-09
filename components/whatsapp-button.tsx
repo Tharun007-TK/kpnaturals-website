@@ -9,7 +9,7 @@ export function WhatsAppButton() {
 
   const handleWhatsAppClick = () => {
     const baseMessage =
-      "Hi! I'm interested in KP Natural Hairoils. Can you tell me more about your sulfur-free hair oil?";
+      "Hi! I'm interested in KP Naturals. Can you tell me more about your sulfur-free hair oil?";
 
     const sanitizedMessage = baseMessage.replace(/[<>]/g, "").substring(0, 500); // Remove potential XSS chars and limit length
     const encodedMessage = encodeURIComponent(sanitizedMessage);

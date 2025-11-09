@@ -93,7 +93,7 @@ export default function ProductsPage() {
   };
 
   const handleWhatsAppClick = (productName?: string, productPrice?: number) => {
-    const name = productName || "KP Natural Hairoils";
+    const name = productName || "KP Naturals";
     const price = productPrice ? `₹${productPrice}` : pricingData.currentPrice;
     const message = encodeURIComponent(
       `Hi! I'm interested in ${name} at ${price}. Can you tell me more about your sulfur-free hair oil?`
@@ -434,7 +434,7 @@ export default function ProductsPage() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto">
             <Button
               size="lg"
-              onClick={handleWhatsAppClick}
+              onClick={() => handleWhatsAppClick()}
               className="bg-green-600 hover:bg-green-700 text-white shadow-lg border-0 w-full sm:w-auto"
             >
               Order Now - {pricingData.currentPrice}

@@ -1,6 +1,6 @@
 # Supabase Integration Setup Guide
 
-This guide will walk you through setting up Supabase for product and review management in the KP Natural Oil Website.
+This guide will walk you through setting up Supabase for product and review management in the KP Naturals Website.
 
 ## Prerequisites
 
@@ -162,13 +162,13 @@ You can manually add products through the admin panel or use this sample data in
 ```sql
 INSERT INTO products (name, description, price, image_url) VALUES
   (
-    'KP Natural Hair Oil - Classic',
+  'KP Naturals Hair Oil - Classic',
     'Our premium sulfur-free hair oil infused with hibiscus, coconut, and rosemary. Perfect for all hair types.',
     145.00,
     '/product1.png'
   ),
   (
-    'KP Natural Hair Oil - Intense',
+  'KP Naturals Hair Oil - Intense',
     'Extra strength formula for damaged and weak hair. Contains our secret herbal blend.',
     185.00,
     '/product2.png'

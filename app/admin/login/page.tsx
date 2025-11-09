@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
               Admin Login
             </CardTitle>
             <CardDescription className="text-emerald-700/70 dark:text-emerald-300/80 font-medium">
-              KP Natural Hairoils — Management Console
+              KP Naturals — Management Console
             </CardDescription>
           </div>
         </CardHeader>

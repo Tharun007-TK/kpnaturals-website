@@ -22,9 +22,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "KP Natural Hairoils - Sulfur-Free Natural Hair Care",
+  title: "KP Naturals - Sulfur-Free Natural Hair Care",
   description:
-    "Transform your hair with KP Natural Hairoils. 100% natural, sulfur-free hair oil with hibiscus, coconut oil, and aloe vera. ₹145 with Sunday 20% off.",
+    "Transform your hair with KP Naturals. 100% natural, sulfur-free hair oil with hibiscus, coconut oil, and aloe vera. ₹145 with Sunday 20% off.",
   generator: "v0.app",
 };
 

@@ -1,6 +1,6 @@
-# KP Natural Oil Website - Complete Setup & Running Guide
+# KP Naturals Website - Complete Setup & Running Guide
 
-A modern e-commerce website for KP Natural Hairoils built with Next.js 14, Supabase, and TailwindCSS featuring product management, customer reviews, and admin dashboard.
+A modern e-commerce website for KP Naturals built with Next.js 14, Supabase, and TailwindCSS featuring product management, customer reviews, and admin dashboard.
 
 ## 🚀 Quick Start
 
@@ -111,10 +111,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser! 🎉
 1. Login to admin at `/admin/login`
 2. Go to "Products" tab
 3. Fill the form:
-   - **Name**: Product name (e.g., "KP Natural Hair Oil - Classic")
+
+   - **Name**: Product name (e.g., "KP Naturals Hair Oil - Classic")
    - **Description**: Product details
    - **Price**: Numeric value (e.g., 145)
    - **Image URL**: Path (e.g., `/product1.png`)
+
 4. Click "Add Product"
 5. Product appears on `/products` page immediately!
 

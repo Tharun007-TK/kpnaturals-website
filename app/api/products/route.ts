@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabase } from "@/lib/supabase-client";
+import { getSupabase, isSupabaseConfigured } from "@/lib/supabase-client";
 import { getServiceSupabase } from "@/lib/supabase-server";
 
 // GET all products
@@ -7,8 +7,22 @@ export async function GET() {
   try {
     const supabase = getSupabase();
     if (!supabase) {
+      // Provide richer diagnostics to help pinpoint configuration issues.
+      const urlPresent = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+      const anonPresent = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+      console.error("[products GET] Supabase not configured", {
+        urlPresent,
+        anonPresent,
+      });
       return NextResponse.json(
-        { error: "Supabase not configured" },
+        {
+          error: "Supabase not configured",
+          diagnostics: {
+            supabaseConfigured: isSupabaseConfigured(),
+            urlPresent,
+            anonPresent,
+          },
+        },
         { status: 500 }
       );
     }
@@ -19,18 +33,24 @@ export async function GET() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
+      console.error("[products GET] Error fetching products", error);
       return NextResponse.json(
-        { error: "Failed to fetch products" },
+        {
+          error: "Failed to fetch products",
+          diagnostics: { message: error.message, code: error.code },
+        },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ products });
-  } catch (error) {
-    console.error("Unexpected error:", error);
+  } catch (error: any) {
+    console.error("[products GET] Unexpected error", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error: "Internal server error",
+        diagnostics: { message: error?.message },
+      },
       { status: 500 }
     );
   }

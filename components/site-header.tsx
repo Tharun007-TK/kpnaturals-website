@@ -144,13 +144,13 @@ export function SiteHeader() {
             <span className="relative block">
               <img
                 src="/kp-header-logo.png"
-                alt="KP Natural Hairoils Logo"
+                alt="KP Naturals Logo"
                 className="h-8 w-8 md:h-10 md:w-10 object-cover rounded-full dark:brightness-110 dark:contrast-110 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
               />
               <span className="absolute inset-0 rounded-full bg-gradient-to-br from-green-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md -z-10" />
             </span>
             <span className="font-serif font-black text-base md:text-xl text-foreground whitespace-nowrap transition-colors duration-300 group-hover:text-primary">
-              KP Natural Hairoils
+              KP Naturals
             </span>
           </Link>
         </div>
@@ -195,7 +195,7 @@ export function SiteHeader() {
                   className="font-serif font-black text-lg hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md inline-block"
                   aria-label="Go to home"
                 >
-                  KP Natural Hairoils
+                  KP Naturals
                 </Link>
               </div>
               <nav aria-label="Mobile" className="flex flex-col p-2 space-y-1">

@@ -39,7 +39,7 @@ export default function HomePage() {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
-      "Hi! I'm interested in KP Natural Hairoils. Can you tell me more about your sulfur-free hair oil?"
+      "Hi! I'm interested in KP Naturals. Can you tell me more about your sulfur-free hair oil?"
     );
     window.open(`https://wa.me/916381248615?text=${message}`, "_blank");
   };
@@ -526,11 +526,11 @@ export default function HomePage() {
               <div className="flex items-center gap-3 mb-4 sm:mb-6 justify-center sm:justify-start">
                 <img
                   src="/kp-header-logo.png"
-                  alt="KP Natural Hairoils Logo"
+                  alt="KP Naturals Logo"
                   className="h-8 sm:h-10 w-8 sm:w-10 object-cover rounded-full dark:brightness-110 dark:contrast-110"
                 />
                 <h3 className="text-lg sm:text-xl font-serif font-black text-foreground">
-                  KP Natural Hairoils
+                  KP Naturals
                 </h3>
               </div>
               <p className="text-muted-foreground mb-4 font-medium leading-relaxed text-center sm:text-left text-sm sm:text-base">
@@ -603,7 +603,7 @@ export default function HomePage() {
           </div>
           <div className="border-t border-border/50 mt-12 sm:mt-16 pt-6 sm:pt-8 text-center text-muted-foreground">
             <p className="font-medium text-sm sm:text-base">
-              &copy; 2024 KP Natural Hairoils. {t("footer.rights")}
+              &copy; 2024 KP Naturals. {t("footer.rights")}
             </p>
           </div>
         </div>
