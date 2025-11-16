@@ -1,3 +1,201 @@
+# KP Naturals — Website
+
+This repository powers the KP Naturals storefront and admin UI built with Next.js 14 (App Router) and Supabase for data and storage.
+
+The README covers: project overview, local setup, Supabase configuration, common troubleshooting (including DNS/fetch errors), and notes for key components (including `product-image-carousel`).
+
+--
+
+## Table of contents
+
+- Project overview
+- Prerequisites
+- Local setup
+- Environment variables (.env.local)
+- Supabase setup
+- Running the app
+- Building for production
+- Troubleshooting
+- Key components
+- Tests & linting
+- Deployment notes
+
+## Project overview
+
+This is a small ecommerce site for KP Naturals. It uses:
+
+- Next.js 14 (App Router)
+- Supabase (Auth, Postgres, Storage)
+- Tailwind CSS (utility-first styling)
+- pnpm as package manager
+
+Code layout (important files/folders):
+
+- `app/` — Next.js App Router pages and API routes
+- `components/` — React components used across pages
+- `lib/` — Supabase client helpers and utilities
+- `public/` — static assets and fallback images
+- `supabase/` — SQL migration and helper SQL files
+
+## Prerequisites
+
+- Node.js 20+ (LTS recommended)
+- pnpm
+- A Supabase project (project URL + anon key + service role key)
+
+Install dependencies:
+
+```powershell
+pnpm install
+```
+
+## Local setup
+
+1. Copy env example and fill secrets (DO NOT commit secrets):
+
+```powershell
+Copy-Item .env.local.example .env.local
+notepad .env.local
+```
+
+2. Fill the following values in `.env.local` (example values in `.env.local.example`):
+
+- `NEXT_PUBLIC_SUPABASE_URL` — e.g. `https://<project-id>.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — public anon key
+- `SUPABASE_SERVICE_ROLE_KEY` — service role key (server-only; keep secret)
+- `NEXT_PUBLIC_ADMIN_EMAIL` — optional admin email allowed for admin endpoints
+- `ADMIN_AUTO_SEED` — optional (true/false) to seed default admin
+
+3. (Optional) Seed DB using Supabase SQL scripts in `supabase/` if needed. Follow `SUPABASE_SETUP.md`.
+
+## Supabase setup
+
+If you haven't created a Supabase project:
+
+1. Create a project at https://app.supabase.com
+2. Create the database schema by running the SQL in `supabase/migration.sql` or follow `SUPABASE_SETUP.md`.
+3. Create a storage bucket `product-images` (this project will attempt to auto-create it when uploading).
+4. Copy the project `URL`, `anon` key and the `service_role` key into `.env.local`.
+
+Security note: `SUPABASE_SERVICE_ROLE_KEY` must remain server-only. Never expose it to the browser or commit to source control.
+
+## Running the app
+
+Development:
+
+```powershell
+pnpm dev
+```
+
+Production build & start (locally):
+
+```powershell
+pnpm build
+pnpm start
+```
+
+The app exposes an internal API under `app/api/*` routes (server runtime). Many server routes use `getServiceSupabase()` which requires the `SUPABASE_SERVICE_ROLE_KEY`.
+
+## Troubleshooting
+
+- DNS / fetch errors connecting to Supabase
+
+  If you see errors like `getaddrinfo ENOTFOUND <project-id>.supabase.co` or `ConnectTimeoutError`, do these checks:
+
+  1. Verify `.env.local` contains the correct `NEXT_PUBLIC_SUPABASE_URL` value (format `https://<project-id>.supabase.co`).
+  2. Confirm the running Next process uses the env values you edited (restart dev server after editing `.env.local`).
+  3. Test DNS & TCP from your machine (PowerShell):
+
+     ```powershell
+     nslookup <project-id>.supabase.co
+     Test-NetConnection -ComputerName <project-id>.supabase.co -Port 443
+     ```
+
+  4. If DNS fails (ENOTFOUND) try a different network or check VPN/firewall/DNS settings.
+  5. If the host resolves but fetch times out, retry later or check Supabase project status.
+
+- `The resource already exists` on bucket create
+
+  The upload route attempts to create a bucket if missing. If the bucket already exists, Supabase responds with a 400. That is safe — bucket exists and uploads should proceed. The code handles both cases.
+
+- When pages fail to render on server due to Supabase errors
+
+  - The app uses defensive checks in API routes: if Supabase is not configured, many endpoints return an empty dataset with `degraded: true`. Check `app/api/health` for env diagnostics.
+
+## Key components
+
+This project contains multiple UI components. Below is a focused README for the carousel in `components/product-image-carousel.tsx`.
+
+**`components/product-image-carousel.tsx`**
+
+- Purpose: Lightweight automatic image carousel used to display product images with graceful fallbacks.
+- Location: `components/product-image-carousel.tsx`
+
+Props:
+
+- `images: string[]` — array of image URLs (optional). Component will filter falsy values.
+- `intervalMs?: number` — time between slides in milliseconds. Default: `3500`.
+- `alt?: string` — alt text for the image. Default: `"Product image"`.
+- `minSlides?: number` — ensure at least `minSlides` are presented by appending fallback images. Default: `3`.
+
+Behavior & implementation notes:
+
+- Combines user-supplied `images` with a small set of `FALLBACK_SOURCES` (static images in `public/`) so the carousel is visually full even if no uploads exist.
+- Auto-advances slides with `setInterval` while mounted. Interval stops when only one slide exists.
+- Resets `index` to `0` whenever the slides list changes (prevents out-of-range indexes when images change).
+- Uses `loading="lazy"` and `referrerPolicy="no-referrer"` on the `<img>` tag to reduce privacy leakage and network load.
+- The parent container includes the `group` class so `group-hover` CSS utilities (Tailwind) apply to child transform transitions.
+
+Accessibility & customization:
+
+- `alt` prop exists — always provide meaningful alt text for product images for a11y.
+- If you need keyboard controls or visible navigation buttons in the small carousel, wrap the component and add custom controls that update `index` via a ref/state wrapper.
+
+Example usage:
+
+```tsx
+import { ProductImageCarousel } from "@/components/product-image-carousel";
+
+<ProductImageCarousel
+  images={[product.image_url, ...(product.image_urls || [])]}
+  alt={product.name}
+  intervalMs={4000}
+  minSlides={4}
+/>;
+```
+
+## Tests & linting
+
+- Linting and type checks are set up in the project (if configured). Run:
+
+```powershell
+pnpm lint
+pnpm typecheck
+```
+
+## Deployment notes
+
+- Ensure all required environment variables are set in your hosting environment:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (server-only)
+- Many hosting providers require SSR environment vars to be set in their dashboard; do not leak service keys to client builds.
+
+## Further improvements & TODOs
+
+- Add unit tests for `product-carousel` and `product-image-carousel` logic.
+- Add integration test for Supabase API routes using a test Supabase project or mocks.
+- Add an admin UI flow for uploading product images with progress indicators and robust retry.
+
+---
+
+If you'd like, I can:
+
+- extend the `README` with deployment specific instructions (Vercel, Fly, Render), or
+- add a small `docs/` folder with component-level READMEs for each component.
+
+Feedback or preferred format? I can adjust tone/length or generate a short `CONTRIBUTING.md` next.
+
 # KP Naturals Website - Complete Setup & Running Guide
 
 A modern e-commerce website for KP Naturals built with Next.js 14, Supabase, and TailwindCSS featuring product management, customer reviews, and admin dashboard.
